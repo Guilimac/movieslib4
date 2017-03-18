@@ -12,7 +12,7 @@ import CoreData
 class MoviesTableViewController: UITableViewController {
     
     var fetchedResultController:NSFetchedResultsController<Movie>!
-    
+    var label:UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,12 +26,12 @@ class MoviesTableViewController: UITableViewController {
         tableView.estimatedRowHeight = 106
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 22))
+        label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 22))
         label.text = "Sem filmes"
         label.textAlignment = .center
         label.textColor = .white
         
-        tableView.backgroundView = label
+        
         loadMovies()
     }
 
@@ -70,8 +70,10 @@ class MoviesTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         if let count = fetchedResultController.fetchedObjects?.count{
+            tableView.backgroundView = (count == 0) ? label : nil
             return count
         }else{
+            tableView.backgroundView = label
             return 0
         }
         
@@ -103,17 +105,21 @@ class MoviesTableViewController: UITableViewController {
     }
     */
 
-    /*
-    // Override to support editing the table view.
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+            //tableView.deleteRows(at: [indexPath], with: .fade)
+            let movie = fetchedResultController.object(at: indexPath)
+            context.delete(movie)
+            do{
+                try context.save()
+            }catch{
+                print(error.localizedDescription)
+            }
+        }
     }
-    */
+    
 
     /*
     // Override to support rearranging the table view.
