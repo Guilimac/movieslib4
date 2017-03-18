@@ -12,6 +12,7 @@ import CoreData
 class MoviesTableViewController: UITableViewController {
     
     var fetchedResultController:NSFetchedResultsController<Movie>!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,6 +46,8 @@ class MoviesTableViewController: UITableViewController {
     // MAKK: - Methods
     func loadMovies(){
         let fetchRequest:NSFetchRequest<Movie> = Movie.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
         fetchedResultController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultController.delegate = self
         do{
